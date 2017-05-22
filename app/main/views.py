@@ -22,8 +22,6 @@ def douban():
 @main.route('/api/guoke/article',methods=['GET'])
 def guoke():
     page = request.args.get('page',1,type=int)
-    if  not isinstance(page,int):
-        return forbbiden('type error')
     pagination = Guoke.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
     return jsonify({
         'article_resource':[ i.to_json() for i in pagination.items],
