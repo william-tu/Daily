@@ -12,8 +12,6 @@ from math import ceil
 @main.route('/api/douban/article',methods=['GET'])
 def douban():
     page = request.args.get('page',1,type=int)
-    if  not isinstance(page,int):
-        return forbbiden('type error')
     pagination = Douban.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
     return jsonify({
         'article_resource':[ i.to_json() for i in pagination.items],
@@ -34,12 +32,10 @@ def guoke():
         'total_pages':pagination.pages
     })
 
-@main.route('/api/search',methods=['POST'])
+@main.route('/api/search',methods=['GET'])
 def search():
-    page = request.json.get('page', 1)
-    if not isinstance(page, int):
-        return forbbiden('type error')
-    query_words = request.json.get('query','')
+    page = request.args.get('page', 1,type=int)
+    query_words = request.args.get('query','')
     res = client.search(
         index="douban",
         body={
@@ -54,9 +50,7 @@ def search():
         }
     )
     result = []
-    total = 0
-    if not total:
-        total = res['hits']['total']
+    total = res['hits']['total']
     for hit in res['hits']['hits']:
         result.append(hit["_source"])
     return jsonify({
