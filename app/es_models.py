@@ -32,6 +32,18 @@ class GuokeType(DocType):
 		index = 'guoke'
 		doc_type = 'article'
 
+class ZhihuType(DocType):
+	id = Keyword()
+	title = Text(analyzer='ik_max_word')
+	content = Text(analyzer='ik_max_word')
+	message_url = Keyword()
+	image_url = Keyword()
+	add_time = Date()
+	source_from = Text(analyzer='ik_max_word')
+
+	class Meta:
+		index = 'zhihu'
+		doc_type = 'article'
 
 if __name__=='__main__':
 	DoubanType.init()
