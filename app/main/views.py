@@ -14,7 +14,7 @@ def douban():
     pagination = Douban.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
     return jsonify({
         'article_resource':[ i.to_json() for i in pagination.items],
-        'next': pagination.has_next,
+        'has_next': pagination.has_next,
         'pages':pagination.pages
     })
 
@@ -24,7 +24,7 @@ def guoke():
     pagination = Guoke.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
     return jsonify({
         'article_resource':[ i.to_json() for i in pagination.items],
-        'next': pagination.has_next,
+        'has_next': pagination.has_next,
         'current_page': page,
         'total_pages':pagination.pages
     })
@@ -52,7 +52,7 @@ def douban_search():
         result.append(hit["_source"])
     return jsonify({
         'article_resource': result,
-        'next': page * current_app.config['PER_PAGE'] < total,
+        'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
         'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
 
@@ -81,7 +81,7 @@ def guoke_search():
         result.append(hit["_source"])
     return jsonify({
         'article_resource': result,
-        'next': page * current_app.config['PER_PAGE'] < total,
+        'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
         'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
 
@@ -110,7 +110,7 @@ def zhihu_daily_search():
         result.append(hit["_source"])
     return jsonify({
         'article_resource': result,
-        'next': page * current_app.config['PER_PAGE'] < total,
+        'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
         'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
 
@@ -138,7 +138,7 @@ def all_search():
         result.append(hit["_source"])
     return jsonify({
         'article_resource': result,
-        'next': page * current_app.config['PER_PAGE'] < total,
+        'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
         'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
 
