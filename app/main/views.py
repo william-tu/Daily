@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-from flask import request,current_app,jsonify
-from . import main
-from ..models import Douban,Guoke
-from .. import client
-
-
 from math import ceil
 
+from flask import request, current_app, jsonify, render_template
+
+from . import main
+from .. import client
+from ..models import Douban, Guoke
+
+
+@main.route('/',methods=['GET','POST'])
+def index():
+    return render_template('índex.html')
 
 @main.route('/api/douban/article',methods=['GET'])
 def douban():
