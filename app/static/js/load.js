@@ -5,7 +5,7 @@ $(document).ready(function () {
     var current_page = 1;
     var category_index = 0;
     var $lb = $('#load-button');
-    <!-- var category = ['all','douban','guoke','zhihu'] -->
+    /* var category = ['all','douban','guoke','zhihu'] */
     var category = ['douban', 'douban', 'guoke', 'zhihu']
     $('#nav-tab li').each(function () {
         $(this).click(function () {
@@ -19,7 +19,7 @@ $(document).ready(function () {
             }
         })
     })
-
+    /* 选项卡切换逻辑 */
 
     $(document).ajaxSend(function () {
         $lb.attr('disabled', 'disabled');
@@ -59,14 +59,12 @@ $(document).ready(function () {
                                 $('aside:first article:last div:first div[class="other-pic"] a').append($s);
                             }
 
-
                         }
                         if (data['has_next']) {
                             $lb.removeAttr('disabled');
                             $lb.html("<a>加载更多</a>");
 
                         } else {
-                            console.log(data['has_next']);
                             $lb.attr('disabled', 'disabled');
                             $lb.html("<a>暂无更多</a>");
                         }
