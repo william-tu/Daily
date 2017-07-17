@@ -1,0 +1,82 @@
+body {
+    font-family: "Microsoft YaHei UI";
+}
+
+article {
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.content a {
+
+}
+
+.title {
+    margin-bottom: 8px;
+}
+
+a, a:hover {
+    color: #37a;
+    text-decoration: none;
+}
+
+.title a {
+    font-weight: bold;
+}
+
+.pic a {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100px;
+    height: 100px;
+    display: block;
+}
+
+.full-pic {
+    padding: 40px 100px 40px 100px;
+
+    overflow: hidden
+}
+
+.full-pic img {
+    width: 100%;
+}
+
+.first-pic {
+    float: left;
+    width: 240px;
+    margin-right: 34px
+}
+
+.first-pic a {
+    width: 100%;
+    height: 100%;
+}
+
+.other-pic {
+    width: 236px;
+    float: right;
+
+}
+
+.other-pic a span {
+    display: block;
+    float: left;
+    height: 56px;
+    width: 56px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+}
+#load-button{
+    width:66%;
+    margin: 15px auto;
+    background-color: #F9F9F9;
+}
+.suggest {
+    margin-top: 30px;
+    padding-left: 15px;
+}

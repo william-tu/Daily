@@ -5,12 +5,12 @@ from flask import request, current_app, jsonify, render_template
 
 from . import main
 from .. import client
-from ..models import Douban, Guoke
+from ..models import Douban, Guoke, Zhihu
 
 
 @main.route('/',methods=['GET','POST'])
 def index():
-    return render_template('índex.html')
+    return render_template("index.html")
 
 @main.route('/api/douban/article',methods=['GET'])
 def douban():
@@ -26,6 +26,17 @@ def douban():
 def guoke():
     page = request.args.get('page',1,type=int)
     pagination = Guoke.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
+    return jsonify({
+        'article_resource':[ i.to_json() for i in pagination.items],
+        'has_next': pagination.has_next,
+        'current_page': page,
+        'total_pages':pagination.pages
+    })
+
+@main.route('/api/zhihu/article',methods=['GET'])
+def zhihu():
+    page = request.args.get('page',1,type=int)
+    pagination = Zhihu.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
     return jsonify({
         'article_resource':[ i.to_json() for i in pagination.items],
         'has_next': pagination.has_next,
