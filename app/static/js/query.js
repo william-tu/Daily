@@ -1,4 +1,7 @@
 /**
+ * Created by TU on 2017/7/18.
+ */
+/**
  * Created by TU on 2017/7/17.
  */
 $(document).ready(function () {
@@ -22,27 +25,30 @@ $(document).ready(function () {
             }
         })
     })
+    $('#query-form button').on('click', function(){
+        current_page = 1;
+        $('aside:first article').remove();
+
+    })
     /* 选项卡切换逻辑 */
-    $('#query-form button').on('click',function(){
-        window.location.href=window.location.protocol + "//" + window.location.host + '/query';
-
-
-        })
-
-
 
     $(document).ajaxSend(function () {
         $lb.attr('disabled', 'disabled');
         $lb.html("<a>loading</a>");
     })
-    $lb.on('click', function () {
+    $('#query-form button,#load-button').on('click', function () {
+        if(!$('#query-form div input').val()) return ;
         $.ajax(
             {
-                url: window.location.protocol + "//" + window.location.host + '/api/' + category[category_index] + '/article?page=' + current_page,
+                url: window.location.protocol + "//" + window.location.host + '/api/' + category[category_index] + '/search?page=' + current_page + '&query=' + $('#query-form div input').val(),
                 dataType: 'json',
                 cache: true,
                 type: 'get',
                 success: function (data) {
+                    if(current_page ===1 && data['total_pages'] === 0){
+                        $lb.html("<a>暂无结果</a>");
+                        return ;
+                    }
                     current_page++;
                     $.each(data['article_resource'], function (index, item) {
                         if (item['content'].substring(0, 4) !== 'http') {

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from math import ceil
 
-from flask import request, current_app, jsonify, render_template
+from flask import request, current_app, jsonify, render_template, send_file, url_for
 
 from . import main
 from .. import client
@@ -12,6 +12,11 @@ from ..models import Douban, Guoke, Zhihu
 def index():
     return render_template("index.html")
 
+@main.route('/query',methods=['GET','POST'])
+def query():
+    return render_template('search.html')
+
+
 @main.route('/api/douban/article',methods=['GET'])
 def douban():
     page = request.args.get('page',1,type=int)
@@ -21,6 +26,7 @@ def douban():
         'has_next': pagination.has_next,
         'pages':pagination.pages
     })
+
 
 @main.route('/api/guoke/article',methods=['GET'])
 def guoke():
@@ -102,8 +108,8 @@ def guoke_search():
 
     })
 
-@main.route('/api/zhihu_daily/search',methods=['GET'])
-def zhihu_daily_search():
+@main.route('/api/zhihu/search',methods=['GET'])
+def zhihu_search():
     page = request.args.get('page', 1,type=int)
     query_words = request.args.get('query','')
     res = client.search(
