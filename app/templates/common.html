@@ -53,11 +53,14 @@
 
 </nav>
 <div class="container">
-        <form class="navbar-form navbar-left" role="search" method="get" id="query-form">
+        <form class="navbar-form navbar-left" role="search" method="get" id="query-form" action="{{ url_for('main.query') }}">
+            {% block form %}
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
+                <input type="text" class="form-control"  name='keywords' placeholder="Search" required="required">
             </div>
-            <button type="button" class="btn btn-success">Submit</button>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+            {% endblock %}
         </form>
 
     <ul class="nav nav-tabs" id="nav-tab">
@@ -125,7 +128,7 @@
           <p>站长拥有对以上内容完全解释权</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>
     </div>
   </div>

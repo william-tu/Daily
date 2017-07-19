@@ -34,8 +34,10 @@ a, a:hover {
 }
 
 .full-pic {
+    margin: auto 15px;
     padding: 40px 100px 40px 100px;
-
+    background-color: #F8F8F8;
+    background-clip: padding-box;
     overflow: hidden
 }
 

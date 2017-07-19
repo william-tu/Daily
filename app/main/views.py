@@ -14,7 +14,8 @@ def index():
 
 @main.route('/query',methods=['GET','POST'])
 def query():
-    return render_template('search.html')
+    keywords = request.args.get('keywords')
+    return render_template('search.html',keywords=keywords)
 
 
 @main.route('/api/douban/article',methods=['GET'])

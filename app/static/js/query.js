@@ -1,9 +1,6 @@
 /**
  * Created by TU on 2017/7/18.
  */
-/**
- * Created by TU on 2017/7/17.
- */
 $(document).ready(function () {
     $('div[class="navbar-header"] button').on('click',function(){
         $(".collapse").collapse('toggle');

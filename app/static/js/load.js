@@ -23,13 +23,6 @@ $(document).ready(function () {
         })
     })
     /* 选项卡切换逻辑 */
-    $('#query-form button').on('click',function(){
-        window.location.href=window.location.protocol + "//" + window.location.host + '/query';
-
-
-        })
-
-
 
     $(document).ajaxSend(function () {
         $lb.attr('disabled', 'disabled');
