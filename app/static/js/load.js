@@ -39,6 +39,7 @@ $(document).ready(function () {
                     current_page++;
                     $.each(data['article_resource'], function (index, item) {
                         if (item['content'].substring(0, 4) !== 'http') {
+                            if(item['image_url'] === '') item['image_url'] = 'http://cdnq.duitang.com/uploads/blog/201407/18/20140718094627_uNCK2.thumb.700_0.jpeg'
                             var $h = $('#common').text();
                             if ($('aside:first article:last').length == 0) {
                                 $('aside:first ').prepend($h);
