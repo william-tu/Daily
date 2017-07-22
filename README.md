@@ -11,6 +11,7 @@
 
 ## 简介
 Daily是一款文章浏览型应用，旨在提供优质的文章导航。
+目前爬取的文章有知乎豆瓣果壳的文章
 
 通过[search_spider](https://github.com/william-tu/search_spider)爬取文章部分信息保存至mongodb和elasticsearch数据库，Flask提供接口,bootstrap,jquery进行数据的展示
 
