@@ -1,60 +1,63 @@
 # -*- coding: utf-8 -*-
 from math import ceil
 
-from flask import request, current_app, jsonify, render_template, send_file, url_for
+from flask import request, current_app, jsonify, render_template
 
 from . import main
 from .. import client
 from ..models import Douban, Guoke, Zhihu
 
 
-@main.route('/',methods=['GET','POST'])
+@main.route('/', methods=['GET', 'POST'])
 def index():
     return render_template("index.html")
 
-@main.route('/query',methods=['GET','POST'])
+
+@main.route('/query', methods=['GET', 'POST'])
 def query():
     keywords = request.args.get('keywords')
-    return render_template('search.html',keywords=keywords)
+    return render_template('search.html', keywords=keywords)
 
 
-@main.route('/api/douban/article',methods=['GET'])
+@main.route('/api/douban/article', methods=['GET'])
 def douban():
-    page = request.args.get('page',1,type=int)
-    pagination = Douban.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
+    page = request.args.get('page', 1, type=int)
+    pagination = Douban.objects.paginate(page=page, per_page=current_app.config['PER_PAGE'])
     return jsonify({
-        'article_resource':[ i.to_json() for i in pagination.items],
+        'article_resource': [i.to_json() for i in pagination.items],
         'has_next': pagination.has_next,
-        'pages':pagination.pages
+        'pages': pagination.pages
     })
 
 
-@main.route('/api/guoke/article',methods=['GET'])
+@main.route('/api/guoke/article', methods=['GET'])
 def guoke():
-    page = request.args.get('page',1,type=int)
-    pagination = Guoke.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
+    page = request.args.get('page', 1, type=int)
+    pagination = Guoke.objects.paginate(page=page, per_page=current_app.config['PER_PAGE'])
     return jsonify({
-        'article_resource':[ i.to_json() for i in pagination.items],
+        'article_resource': [i.to_json() for i in pagination.items],
         'has_next': pagination.has_next,
         'current_page': page,
-        'total_pages':pagination.pages
+        'total_pages': pagination.pages
     })
 
-@main.route('/api/zhihu/article',methods=['GET'])
+
+@main.route('/api/zhihu/article', methods=['GET'])
 def zhihu():
-    page = request.args.get('page',1,type=int)
-    pagination = Zhihu.objects.paginate(page=page,per_page=current_app.config['PER_PAGE'])
+    page = request.args.get('page', 1, type=int)
+    pagination = Zhihu.objects.paginate(page=page, per_page=current_app.config['PER_PAGE'])
     return jsonify({
-        'article_resource':[ i.to_json() for i in pagination.items],
+        'article_resource': [i.to_json() for i in pagination.items],
         'has_next': pagination.has_next,
         'current_page': page,
-        'total_pages':pagination.pages
+        'total_pages': pagination.pages
     })
 
-@main.route('/api/douban/search',methods=['GET'])
+
+@main.route('/api/douban/search', methods=['GET'])
 def douban_search():
-    page = request.args.get('page', 1,type=int)
-    query_words = request.args.get('query','')
+    page = request.args.get('page', 1, type=int)
+    query_words = request.args.get('query', '')
     res = client.search(
         index="douban",
         body={
@@ -76,14 +79,15 @@ def douban_search():
         'article_resource': result,
         'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
-        'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
+        'total_pages': int(ceil(total / float(current_app.config['PER_PAGE'])))
 
     })
 
-@main.route('/api/guoke/search',methods=['GET'])
+
+@main.route('/api/guoke/search', methods=['GET'])
 def guoke_search():
-    page = request.args.get('page', 1,type=int)
-    query_words = request.args.get('query','')
+    page = request.args.get('page', 1, type=int)
+    query_words = request.args.get('query', '')
     res = client.search(
         index="guoke",
         body={
@@ -105,14 +109,15 @@ def guoke_search():
         'article_resource': result,
         'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
-        'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
+        'total_pages': int(ceil(total / float(current_app.config['PER_PAGE'])))
 
     })
 
-@main.route('/api/zhihu/search',methods=['GET'])
+
+@main.route('/api/zhihu/search', methods=['GET'])
 def zhihu_search():
-    page = request.args.get('page', 1,type=int)
-    query_words = request.args.get('query','')
+    page = request.args.get('page', 1, type=int)
+    query_words = request.args.get('query', '')
     res = client.search(
         index="zhihu",
         body={
@@ -134,14 +139,15 @@ def zhihu_search():
         'article_resource': result,
         'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
-        'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
+        'total_pages': int(ceil(total / float(current_app.config['PER_PAGE'])))
 
     })
 
-@main.route('/api/all/search',methods=['GET'])
+
+@main.route('/api/all/search', methods=['GET'])
 def all_search():
-    page = request.args.get('page', 1,type=int)
-    query_words = request.args.get('query','')
+    page = request.args.get('page', 1, type=int)
+    query_words = request.args.get('query', '')
     res = client.search(
         body={
             "query": {
@@ -162,8 +168,6 @@ def all_search():
         'article_resource': result,
         'has_next': page * current_app.config['PER_PAGE'] < total,
         'current_page': page,
-        'total_pages':int(ceil(total/float(current_app.config['PER_PAGE'])))
+        'total_pages': int(ceil(total / float(current_app.config['PER_PAGE'])))
 
     })
-
-

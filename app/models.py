@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
-from __init__ import db
 from datetime import datetime
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from __init__ import db
 
 
 class Douban(db.Document):
@@ -17,7 +20,6 @@ class Douban(db.Document):
     source_from = db.StringField()
     add_time = db.DateTimeField(default=datetime.utcnow)
 
-
     def to_json(self):
         json_douban = {
             'title': self.title,
@@ -28,6 +30,7 @@ class Douban(db.Document):
 
         }
         return json_douban
+
 
 class Guoke(db.Document):
     meta = {
@@ -42,7 +45,6 @@ class Guoke(db.Document):
     image_url = db.StringField()
     source_from = db.StringField()
     add_time = db.DateTimeField(default=datetime.utcnow)
-
 
     def to_json(self):
         json_douban = {
@@ -70,7 +72,6 @@ class Zhihu(db.Document):
     source_from = db.StringField()
     add_time = db.DateTimeField(default=datetime.utcnow)
 
-
     def to_json(self):
         json_douban = {
             'title': self.title,
@@ -82,3 +83,28 @@ class Zhihu(db.Document):
         }
         return json_douban
 
+
+class User(db.Document):
+    meta = {
+        'collection': 'User',
+        'indexes': [
+            'username',
+            'email'
+        ]
+    }
+    username = db.StringField(required=True, max_length=30, unique=True)
+    email = db.EmailField(required=True, unique=True)
+    password_hash = db.StringField(required=True, max_length=128)
+    favor = db.ListField(db.GenericReferenceField())
+    add_time = db.DateTimeField(default=datetime.utcnow)
+
+    @property
+    def password(self):
+        raise AttributeError('password can not be read')
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
+
+    def verify_password(self, passwd):
+        return check_password_hash(self.password_hash, passwd)
