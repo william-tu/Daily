@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from math import ceil
 
-from flask import request, current_app, jsonify, render_template
+from flask import request, current_app, jsonify, render_template, g
 
 from . import main
 from .. import client
 from ..models import Douban, Guoke, Zhihu
-
+from ..auth.authentication import basic_auth
+from ..responses import suc_response
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -171,3 +172,9 @@ def all_search():
         'total_pages': int(ceil(total / float(current_app.config['PER_PAGE'])))
 
     })
+
+@main.route('/api/user/favor',methods=['GET','PUT'])
+@basic_auth.login_required
+def user_favor():
+    user = g.current_user
+    pass

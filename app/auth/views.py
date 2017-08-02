@@ -30,7 +30,7 @@ def register():
         return bad_request('email or username or password or verify_code is empty')
     if verify_code != session.get('verify_code'):
         return bad_request('verify_code is wrong')
-    if not session.get('useful_username') or not session.get('useful_username'):
+    if User.objects(username=username).first() or User.objects(email=email).first():
         return bad_request('no verify')
     user = User(email=email, username=username)
     user.password = password
@@ -43,9 +43,7 @@ def username():
     username = request.json.get('username')
     user_by_name = User.objects(username=username).first()
     if user_by_name:
-        session['useful_username'] = False
         return bad_request('username already has been exited')
-    session['useful_username'] = True
     return suc_response('username is useful')
 
 
@@ -54,7 +52,5 @@ def email():
     email = request.json.get('email')
     user_by_email = User.objects(email=email).first()
     if user_by_email:
-        session['useful_email'] = False
         return bad_request('email already has been exited')
-    session['useful_email'] = True
     return suc_response('email is useful')

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
+from flask import current_app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from __init__ import db
@@ -15,7 +17,7 @@ class Douban(db.Document):
     title = db.StringField()
     content = db.StringField()
     message_url = db.StringField()
-    id = db.StringField()
+    data_id = db.StringField()
     image_url = db.StringField()
     source_from = db.StringField()
     add_time = db.DateTimeField(default=datetime.utcnow)
@@ -41,7 +43,7 @@ class Guoke(db.Document):
     title = db.StringField()
     content = db.StringField()
     message_url = db.StringField()
-    id = db.StringField()
+    data_id = db.StringField()
     image_url = db.StringField()
     source_from = db.StringField()
     add_time = db.DateTimeField(default=datetime.utcnow)
@@ -67,7 +69,7 @@ class Zhihu(db.Document):
     title = db.StringField()
     content = db.StringField()
     message_url = db.StringField()
-    id = db.StringField()
+    data_id = db.StringField()
     image_url = db.StringField()
     source_from = db.StringField()
     add_time = db.DateTimeField(default=datetime.utcnow)
@@ -108,3 +110,23 @@ class User(db.Document):
 
     def verify_password(self, passwd):
         return check_password_hash(self.password_hash, passwd)
+
+    def generate_auth_token(self,expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'],expiration)
+        return s.dumps({'email': self.email})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        u = User.objects(email=data['email']).first()
+        if  u:
+            return u
+        return None
+
+
+
+

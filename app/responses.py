@@ -32,4 +32,9 @@ def suc_response(message):
     response.status_code = 200
     return response
 
+def internal_server_error(message):
+    response = jsonify({'error': message})
+    response.status_code = 500
+    return response
+
 
