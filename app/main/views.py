@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from math import ceil
 
-from flask import request, current_app, jsonify, render_template, g
+from flask import request, current_app, jsonify, render_template, g, abort
 
+from app.utils.pagination import Paginate
 from . import main
 from .. import client
-from ..models import Douban, Guoke, Zhihu
 from ..auth.authentication import basic_auth
-from ..responses import suc_response
+from ..models import Douban, Guoke, Zhihu, User
+
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -173,8 +174,29 @@ def all_search():
 
     })
 
-@main.route('/api/user/favor',methods=['GET','PUT'])
+
+@main.route('/api/user/all-favor', methods=['GET'])
 @basic_auth.login_required
 def user_favor():
+    page = request.args.get('page', 1, type=int)
     user = g.current_user
+    pagination = Paginate(iterable=user.favor, current_page=page, per_page=current_app.config['PER_PAGE'])
+    return jsonify({
+        'article_resource': [i.to_json() for i in pagination.items],
+        'has_next': pagination.has_next,
+        'current_page': page,
+        'total_pages': pagination.pages
+    })
+
+
+@main.route('/api/user/favor/<string:data_id>', methods=['GET','PUT'])
+@basic_auth.login_required
+def data_favor(data_id):
     pass
+
+
+
+
+
+
+
