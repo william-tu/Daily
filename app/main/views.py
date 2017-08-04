@@ -7,7 +7,8 @@ from app.utils.pagination import Paginate
 from . import main
 from .. import client
 from ..auth.authentication import basic_auth
-from ..models import Douban, Guoke, Zhihu, User
+from ..models import Douban, Guoke, Zhihu, User, ItemFavor
+from ..responses import suc_response, not_found, bad_request
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -189,14 +190,55 @@ def user_favor():
     })
 
 
-@main.route('/api/user/favor/<string:data_id>', methods=['GET','PUT'])
+@main.route('/api/user/favor/<string:data_id>', methods=['GET', 'PUT', 'DELETE'])
 @basic_auth.login_required
 def data_favor(data_id):
-    pass
+    user = g.current_user
+    all_item = [Zhihu, Douban, Guoke]
+    item = None
+    for a in all_item:
+        item = a.objects.filter(data_id=data_id).first()
+        if item:
+            break
+    if not item:
+        return not_found('not found the data')
+    item_favor = ItemFavor.objects.filter(item=item).first()
 
+    if request.method == 'GET':
+        favor = False
+        if not item_favor:
+            return jsonify({
+                'favor': favor,
+                'count': len(item_favor.favor_user) if item_favor else 0
+            })
 
-
-
-
-
-
+        for u in item_favor.favor_user:
+            if user == u:
+                favor = True
+        item_favor.reload()
+        return jsonify({
+            'favor': favor,
+            'count': len(item_favor.favor_user) if item_favor else 0
+        })
+    elif request.method == 'PUT':
+        for i in user.favor:
+            if item == i:
+                return suc_response('you  already have the favor')
+        user.favor.append(item)
+        user.save()
+        if not item_favor:
+            item_favor = ItemFavor(item=item)
+            item_favor.save()
+        item_favor.favor_user.append(user)
+        item_favor.save()
+        return suc_response('add the favor successfully')
+    elif request.method == 'DELETE':
+        if not item_favor:
+            return suc_response('you have already remove the data')
+        if user not in item_favor.favor_user and item_favor.item not in user.favor:
+            return suc_response('you have already remove the data')
+        item_favor.favor_user.remove(user)
+        item_favor.save()
+        user.favor.remove(item_favor.item)
+        user.save()
+        return suc_response('remove sucessfully')

@@ -6,7 +6,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from __init__ import db
-
+import mongoengine
 
 class Douban(db.Document):
     meta = {
@@ -127,6 +127,22 @@ class User(db.Document):
             return u
         return None
 
+
+class ItemFavor(db.Document):
+    """"
+    被收藏的文章的表
+    item:文章关联Douban Guoke Zhihu
+    favor_user:收藏该文章的用户
+    """
+    meta = {
+        'collection': 'ItemFavor',
+        'indexes': [
+            'item',
+
+        ]
+    }
+    item = db.GenericReferenceField()
+    favor_user = db.ListField(db.ReferenceField('User',reverse_delete_rule=mongoengine.PULL))
 
 
 

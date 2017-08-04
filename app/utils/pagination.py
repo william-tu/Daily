@@ -6,7 +6,7 @@ from flask import abort
 
 class Paginate(object):
     def __init__(self, iterable, current_page, per_page):
-        if current_page < 1 or not iterable:
+        if current_page < 1 :
             abort(404)
         self.iterable = iterable
         self.page = current_page
