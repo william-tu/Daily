@@ -4,7 +4,7 @@ import random
 from flask import session, request, g
 
 from . import auth
-from ..responses import bad_request, suc_response
+from ..responses import bad_request, suc_response, not_found
 from ..utils.mail import send_email
 from ..models import User
 
@@ -36,6 +36,24 @@ def register():
     user.password = password
     user.save()
     return suc_response('register successfully')
+
+
+@auth.route('/api/reset-password', methods=['GET'])
+def reset():
+    info = request.json
+    email = info.get('email')
+    new_password = info.get('password')
+    verify_code = info.get('verify_code')
+    if not new_password:
+        return bad_request('new password is none')
+    user = User.objects.filter(email=email).first()
+    if not user:
+        return not_found('email does not exit')
+    if verify_code != session.get('verify_code'):
+        return bad_request('verify_code is wrong')
+    user.password = new_password
+    user.save()
+    return suc_response('reset password successfully')
 
 
 @auth.route('/api/verify-username', methods=['POST'])

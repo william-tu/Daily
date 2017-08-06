@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from math import ceil
+from datetime import datetime
 
 from flask import request, current_app, jsonify, render_template, g, abort
 
@@ -20,6 +21,20 @@ def index():
 def query():
     keywords = request.args.get('keywords')
     return render_template('search.html', keywords=keywords)
+
+
+@main.route('/api/hot/article', methods=['GET'])
+def hot():
+    if ItemFavor.objects.count() < 10:
+        return jsonify({
+            'article_resource': [i.item.to_json() for i in ItemFavor.objects]
+        })
+    sort_list = sorted(ItemFavor.objects
+                       ,key=lambda i:len(i.favor_user)*1000/((datetime.utcnow()-i.item.add_time).seconds/3600.0+2)**1.2
+                       ,reverse=True)
+    return jsonify({
+            'article_resource': [i.item.to_json() for i in sort_list[:10]]
+        })
 
 
 @main.route('/api/douban/article', methods=['GET'])
