@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import random
 
-from flask import session, request, g
+from flask import session, request
 
 from . import auth
+from ..models import User
 from ..responses import bad_request, suc_response, not_found
 from ..utils.mail import send_email
-from ..models import User
 
 
 @auth.route('/api/generate-code', methods=['POST'])
@@ -38,7 +38,7 @@ def register():
     return suc_response('register successfully')
 
 
-@auth.route('/api/reset-password', methods=['GET'])
+@auth.route('/api/reset-password', methods=['POST'])
 def reset():
     info = request.json
     email = info.get('email')

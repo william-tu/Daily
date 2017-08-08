@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from math import ceil
 from datetime import datetime
+from math import ceil
 
-from flask import request, current_app, jsonify, render_template, g, abort
+from flask import request, current_app, jsonify, render_template, g
 
 from app.utils.pagination import Paginate
 from . import main
 from .. import client
 from ..auth.authentication import basic_auth
-from ..models import Douban, Guoke, Zhihu, User, ItemFavor
-from ..responses import suc_response, not_found, bad_request
+from ..models import Douban, Guoke, Zhihu, ItemFavor
+from ..responses import suc_response, not_found
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -29,12 +29,12 @@ def hot():
         return jsonify({
             'article_resource': [i.item.to_json() for i in ItemFavor.objects]
         })
-    sort_list = sorted(ItemFavor.objects
-                       ,key=lambda i:len(i.favor_user)*1000/((datetime.utcnow()-i.item.add_time).seconds/3600.0+2)**1.2
-                       ,reverse=True)
+    sort_list = sorted(ItemFavor.objects,
+                       key=lambda i: len(i.favor_user) * 1000 / ((datetime.utcnow() - i.item.add_time).seconds / 3600.0 + 2) ** 1.2,
+                       reverse=True)
     return jsonify({
-            'article_resource': [i.item.to_json() for i in sort_list[:10]]
-        })
+        'article_resource': [i.item.to_json() for i in sort_list[:10]]
+    })
 
 
 @main.route('/api/douban/article', methods=['GET'])
