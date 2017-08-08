@@ -31,10 +31,11 @@ def register():
     if verify_code != session.get('verify_code'):
         return bad_request('verify_code is wrong')
     if User.objects(username=username).first() or User.objects(email=email).first():
-        return bad_request('no verify')
+        return bad_request('not pass verification')
     user = User(email=email, username=username)
     user.password = password
     user.save()
+    session.pop('verify_code')
     return suc_response('register successfully')
 
 
@@ -53,6 +54,7 @@ def reset():
         return bad_request('verify_code is wrong')
     user.password = new_password
     user.save()
+    session.pop('verify_code')
     return suc_response('reset password successfully')
 
 
