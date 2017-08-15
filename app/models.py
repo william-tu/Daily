@@ -100,6 +100,14 @@ class User(db.Document):
     favor = db.ListField(db.GenericReferenceField())
     add_time = db.DateTimeField(default=datetime.utcnow)
 
+    def to_json(self):
+        user_data = {
+            'username': self.username,
+            'email': self.email,
+            'favor': [i.to_json() for i in self.favor]
+        }
+        return user_data
+
     @property
     def password(self):
         raise AttributeError('password can not be read')

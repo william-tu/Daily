@@ -257,3 +257,13 @@ def data_favor(data_id):
         user.favor.remove(item_favor.item)
         user.save()
         return suc_response('remove sucessfully')
+
+
+@main.route('/api/user/info', methods=['GET'])
+@basic_auth.login_required
+def user():
+    user = g.current_user
+    if request.method == 'GET':
+        return jsonify(user.to_json())
+
+
