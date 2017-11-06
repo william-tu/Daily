@@ -7,15 +7,16 @@ from . import auth
 from ..models import User
 from ..responses import bad_request, suc_response, not_found
 from ..utils.mail import send_email
-
+from .. import r_client
 
 @auth.route('/api/generate-code', methods=['POST'])
 def generate_code():
     email = request.json.get('email')
     if not email:
         return bad_request('email is none')
-    session['verify_code'] = random.randrange(1000, 10000)
-    send_email(email, u'验证码', 'confirm/confirm', verify_code=session['verify_code'])
+    vefify_code = random.randrange(1000, 10000)
+    r_client.set(email, vefify_code, ex=120)
+    send_email(email, u'验证码', 'confirm/confirm', verify_code=vefify_code)
     return suc_response('send code successfully')
 
 
@@ -28,14 +29,14 @@ def register():
     verify_code = info.get('verify_code')
     if not email or not username or not password or not verify_code:
         return bad_request('email or username or password or verify_code is empty')
-    if verify_code != session.get('verify_code'):
-        return bad_request('verify_code is wrong')
+    if verify_code != r_client.get(email):
+        return bad_request('verify_code is wrong or expired')
     if User.objects(username=username).first() or User.objects(email=email).first():
         return bad_request('not pass verification')
     user = User(email=email, username=username)
     user.password = password
     user.save()
-    session.pop('verify_code')
+    r_client.delete(email)
     return suc_response('register successfully')
 
 
@@ -50,11 +51,11 @@ def reset():
     user = User.objects.filter(email=email).first()
     if not user:
         return not_found('email does not exit')
-    if verify_code != session.get('verify_code'):
+    if verify_code != r_client.get(email):
         return bad_request('verify_code is wrong')
     user.password = new_password
     user.save()
-    session.pop('verify_code')
+    r_client.delete('verify_code')
     return suc_response('reset password successfully')
 
 

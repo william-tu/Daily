@@ -3,6 +3,7 @@ from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_mail import Mail
 from flask_cors import CORS
+import redis
 
 from config import config
 
@@ -10,6 +11,7 @@ mail = Mail()
 db = MongoEngine()
 client = Elasticsearch()
 cors = CORS()
+r_client = redis.Redis()
 
 def create_app(config_name):
 
